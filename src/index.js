@@ -8,15 +8,30 @@ const DEFAULT_SETTINGS = {
   gameStarted: false,
   instructionsExpanded: false
 }
-
-const rootReducer = () => {
-  return DEFAULT_SETTINGS
+const rootReducer = (state = DEFAULT_SETTINGS, action) => {
+  console.log('state', state)
+  console.log('action', action)
+  if (action.type === 'SET_GAME_STARTED') {
+    return {
+      gameStarted: action.gameStarted,
+      instructionsExpanded: false
+    }
+  }
+  return state
 }
-
 const store = createStore(rootReducer)
-
 console.log('store', store)
-sep()
-console.log('getState()', store.getState())
+console.log('store.getState()', store.getState())
+store.subscribe(() =>
+  console.log('store.getState()', store.getState())
+)
+const action1 = { gameStarted: true, type: 'SET_GAME_STARTED' }
+store.dispatch(action1)
+console.log('store.getState()', store.getState())
+store.dispatch({ type: 'foo' })
+
+store.dispatch({ type: 'bar' })
+
+console.log('store.getState()', store.getState())
 
 ReactDOM.render(<App />, document.getElementById('root'))
