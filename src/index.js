@@ -54,3 +54,20 @@ store.dispatch({
     complete: false
   }
 })
+
+store.dispatch({
+  type: 'ADD_TODO',
+  todo: {
+    id: 0,
+    name: 'dsf',
+    complete: false
+  }
+})
+
+const newthing = createStore()
+newthing.dispatch({
+  type: 'ADD_TODO',
+  todo: {
+    id: 4
+  }
+})
