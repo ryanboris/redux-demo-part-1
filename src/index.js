@@ -8,13 +8,23 @@
 */
 
 function todos(state = [], action) {
-  if (action.type === 'ADD_TODO') {
-    return [...state, action.todo]
-  } else if (action.type === 'REMOVE_TODO') {
-    const index = state.findIndex()
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.todo]
+    case 'REMOVE_TODO':
+      return state.filter(todo => todo.id !== action.id)
+    case 'TOGGLE_TODO':
+      return state.map(todo =>
+        todo.id !== action.id
+          ? todo
+          : {
+              ...todo,
+              complete: !todo.complete
+            }
+      )
+    default:
+      return state
   }
-
-  return state
 }
 
 function createStore() {
@@ -46,28 +56,38 @@ function createStore() {
 }
 
 const store = createStore()
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
-    id: 0,
-    name: 'Learn Redux',
-    complete: false
-  }
-})
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   todo: {
+//     id: 0,
+//     name: 'Learn Redux',
+//     complete: false
+//   }
+// })
 
-store.dispatch({
-  type: 'ADD_TODO',
-  todo: {
-    id: 0,
-    name: 'dsf',
-    complete: false
-  }
-})
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   todo: {
+//     id: 0,
+//     name: 'dsf',
+//     complete: false
+//   }
+// })
 
-const newthing = createStore()
-newthing.dispatch({
-  type: 'ADD_TODO',
-  todo: {
-    id: 4
-  }
-})
+// const newthing = createStore()
+// newthing.dispatch({
+//   type: 'ADD_TODO',
+//   todo: {
+//     id: 4
+//   }
+// })
+
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   todo: { id: 3, name: 'D', complete: false }
+// })
+
+console.log('getState()', store.getState())
+console.log('----//--------//--------//-----------//----')
+store.dispatch({ type: 'REMOVE_TODO', id: 3 })
+console.log('getState() after', store.getState())
