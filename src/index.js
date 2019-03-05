@@ -1,33 +1,4 @@
-/*
-  Pure functions:
-    return same results given same arguments
-    return is based only on incoming arguments
-    the function does not modify variables out of its scope
-    never produce side effects
-    
-*/
-
-function todos(state = [], action) {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return [...state, action.todo]
-    case 'REMOVE_TODO':
-      return state.filter(todo => todo.id !== action.id)
-    case 'TOGGLE_TODO':
-      return state.map(todo =>
-        todo.id !== action.id
-          ? todo
-          : {
-              ...todo,
-              complete: !todo.complete
-            }
-      )
-    default:
-      return state
-  }
-}
-
-function createStore() {
+function createStore(todos) {
   let state
   let listeners = []
   const getState = () => state
@@ -54,40 +25,131 @@ function createStore() {
     dispatch
   }
 }
+const ADD_TODO = 'ADD_TODO'
+const REMOVE_TODO = 'REMOVE_TODO'
+const TOGGLE_TODO = 'TOGGLE_TODO'
+const ADD_GOAL = 'ADD_GOAL'
+const REMOVE_GOAL = 'REMOVE_GOAL'
 
-const store = createStore()
-// store.dispatch({
-//   type: 'ADD_TODO',
-//   todo: {
-//     id: 0,
-//     name: 'Learn Redux',
-//     complete: false
-//   }
-// })
+function addToDoAction(todo) {
+  return {
+    type: ADD_TODO,
+    todo
+  }
+}
 
-// store.dispatch({
-//   type: 'ADD_TODO',
-//   todo: {
-//     id: 0,
-//     name: 'dsf',
-//     complete: false
-//   }
-// })
+function removeToDoAction(id) {
+  return {
+    type: REMOVE_TODO,
+    id
+  }
+}
 
-// const newthing = createStore()
-// newthing.dispatch({
-//   type: 'ADD_TODO',
-//   todo: {
-//     id: 4
-//   }
-// })
+function toggleToDoAction(id) {
+  return {
+    type: TOGGLE_TODO,
+    id
+  }
+}
 
-// store.dispatch({
-//   type: 'ADD_TODO',
-//   todo: { id: 3, name: 'D', complete: false }
-// })
+function addGoalAction(goal) {
+  return {
+    type: ADD_GOAL,
+    goal
+  }
+}
 
-console.log('getState()', store.getState())
-console.log('----//--------//--------//-----------//----')
-store.dispatch({ type: 'REMOVE_TODO', id: 3 })
-console.log('getState() after', store.getState())
+function removeGoalAction(id) {
+  return {
+    type: REMOVE_GOAL,
+    id
+  }
+}
+
+function todos(state = [], action) {
+  switch (action.type) {
+    case ADD_TODO:
+      return [...state, action.todo]
+    case REMOVE_TODO:
+      return state.filter(todo => todo.id !== action.id)
+    case TOGGLE_TODO:
+      return state.map(todo =>
+        todo.id !== action.id
+          ? todo
+          : {
+              ...todo,
+              complete: !todo.complete
+            }
+      )
+    default:
+      return state
+  }
+}
+
+function goals(state = [], action) {
+  switch (action.type) {
+    case ADD_GOAL:
+      return [...state, action.goal]
+    case REMOVE_GOAL:
+      return state.filter(goal => goal.id !== action.id)
+    default:
+      return state
+  }
+}
+
+function app(state = {}, action) {
+  return {
+    todos: todos(state.todos, action),
+    goals: goals(state.goals, action)
+  }
+}
+
+const store = createStore(app)
+
+store.subscribe(() => {
+  console.log('The new state is: ', store.getState())
+})
+
+store.dispatch(
+  addToDoAction({
+    id: 0,
+    name: 'Walk the dog',
+    complete: false
+  })
+)
+store.dispatch(
+  addToDoAction({
+    id: 1,
+    name: 'Study',
+    complete: false
+  })
+)
+store.dispatch(
+  addToDoAction({
+    id: 2,
+    name: 'Sleep',
+    complete: false
+  })
+)
+store.dispatch(
+  addGoalAction({
+    id: 0,
+    name: 'Walk the dog'
+  })
+)
+store.dispatch(
+  addGoalAction({
+    id: 1,
+    name: 'Study'
+  })
+)
+store.dispatch(
+  addGoalAction({
+    id: 2,
+    name: 'Sleep'
+  })
+)
+
+store.dispatch(toggleToDoAction(0))
+store.dispatch(removeToDoAction(1))
+store.dispatch(removeGoalAction(0))
